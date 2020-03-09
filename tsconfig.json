@@ -5,14 +5,28 @@
     "moduleResolution": "node",
     "lib": ["es2017", "dom"],
     "strict": true,
+    "baseUrl": ".",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
+    "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
     "experimentalDecorators": true
   },
+  "paths": {
+    "@/*": [
+      "src/*"
+    ],
+  },
+  "plugins": [
+    {
+      "name": "typescript-lit-html-plugin"
+    }
+  ],
   "include": [
     "src/**/*.ts"
   ],
-  "exclude": [],
+  "exclude": [
+    "node_modules",
+  ],
 }

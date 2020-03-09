@@ -1,26 +1,28 @@
-import { LitElement, html, css, property, PropertyValues, customElement } from 'lit-element';
-import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
+import {
+	LitElement, html, css, property, PropertyValues, customElement,
+} from 'lit-element';
+// import { setPassiveTouchGestures } from '@polymer/polymer/lib/utils/settings.js';
+// PWA 관련 라이브러리들 - 각 기능들은 한번 정리한 적이 있음
 import { connect } from 'pwa-helpers/connect-mixin.js';
 import { installMediaQueryWatcher } from 'pwa-helpers/media-query.js';
 import { installOfflineWatcher } from 'pwa-helpers/network.js';
 import { installRouter } from 'pwa-helpers/router.js';
 import { updateMetadata } from 'pwa-helpers/metadata.js';
 
-// This element is connected to the Redux store.
+// 스토어
 import { store, RootState } from '../store';
 
-// These are the actions needed by this element.
+// 액션 불러오기
 import {
-  navigate,
-  updateOffline,
-  updateDrawerState
+	navigate,
+	updateOffline,
+	updateDrawerState,
 } from '../actions/app';
 
-// The following line imports the type only - it will be removed by tsc so
-// another import for app-drawer.js is required below.
-import { AppDrawerElement } from '@polymer/app-layout/app-drawer/app-drawer.js';
+// 레이아웃 엘리먼트 불러오기, 이런 식으로 MVC 나눠서 컴포넌트로 불러오네
+// import { AppDrawerElement } from '@polymer/app-layout/app-drawer/app-drawer.js';
 
-// These are the elements needed by this element.
+// 각 하위 엘리먼트 불러오기
 import '@polymer/app-layout/app-drawer/app-drawer.js';
 import '@polymer/app-layout/app-header/app-header.js';
 import '@polymer/app-layout/app-scroll-effects/effects/waterfall.js';
@@ -30,24 +32,26 @@ import './snack-bar';
 
 @customElement('my-app')
 export class MyApp extends connect(store)(LitElement) {
-  @property({type: String})
+  // 지금보니 무조건 prop을 붙이네, private로 밖에 안드러는 걸로 처리하는건가?
+  @property({ type: String })
   appTitle = '';
 
-  @property({type: String})
+  @property({ type: String })
   private _page = '';
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _drawerOpened = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _snackbarOpened = false;
 
-  @property({type: Boolean})
+  @property({ type: Boolean })
   private _offline = false;
 
   static get styles() {
-    return [
-      css`
+  	return [
+  		css`
+        /* 이런 식으로 css 변수를 선언 */
         :host {
           display: block;
 
@@ -166,6 +170,7 @@ export class MyApp extends connect(store)(LitElement) {
           text-align: center;
         }
 
+         /* 각 화면 width에 따라, px를 정하는 방법도 고려해보자 */
         /* Wide layout: when the viewport width is bigger than 460px, layout
         changes to a wide layout */
         @media (min-width: 460px) {
@@ -187,13 +192,14 @@ export class MyApp extends connect(store)(LitElement) {
             padding-right: 0px;
           }
         }
-      `
-    ];
+      `,
+  	];
   }
 
   protected render() {
-    // Anything that's related to rendering should be done in here.
-    return html`
+  	// Anything that's related to rendering should be done in here.
+  	return html`
+      <!-- 이런 식으로 각 파트부분을 명시하는구나 -->
       <!-- Header -->
       <app-header condenses reveals effects="waterfall">
         <app-toolbar class="toolbar-top">
@@ -239,42 +245,44 @@ export class MyApp extends connect(store)(LitElement) {
   }
 
   constructor() {
-    super();
-    // To force all event listeners for gestures to be passive.
-    // See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
-    setPassiveTouchGestures(true);
+  	super();
+  	// To force all event listeners for gestures to be passive.
+  	// See https://www.polymer-project.org/3.0/docs/devguide/settings#setting-passive-touch-gestures
+  	// setPassiveTouchGestures(true);
   }
 
+  // firstupdated는 protected로 했네?
   protected firstUpdated() {
-    installRouter((location) => store.dispatch(navigate(decodeURIComponent(location.pathname))));
-    installOfflineWatcher((offline) => store.dispatch(updateOffline(offline)));
-    installMediaQueryWatcher(`(min-width: 460px)`,
-        () => store.dispatch(updateDrawerState(false)));
+  	installRouter(location => store.dispatch(navigate(decodeURIComponent(location.pathname))));
+  	installOfflineWatcher(offline => store.dispatch(updateOffline(offline)));
+  	installMediaQueryWatcher('(min-width: 460px)',
+  		() => store.dispatch(updateDrawerState(false)));
   }
 
+  // 이것도 배워갑니다
   protected updated(changedProps: PropertyValues) {
-    if (changedProps.has('_page')) {
-      const pageTitle = this.appTitle + ' - ' + this._page;
-      updateMetadata({
-        title: pageTitle,
-        description: pageTitle
-        // This object also takes an image property, that points to an img src.
-      });
-    }
+  	if (changedProps.has('_page')) {
+  		const pageTitle = `${this.appTitle} - ${this._page}`;
+  		updateMetadata({
+  			title: pageTitle,
+  			description: pageTitle,
+  			// This object also takes an image property, that points to an img src.
+  		});
+  	}
   }
 
   private _menuButtonClicked() {
-    store.dispatch(updateDrawerState(true));
+  	store.dispatch(updateDrawerState(true));
   }
 
   private _drawerOpenedChanged(e: Event) {
-    store.dispatch(updateDrawerState((e.target as AppDrawerElement).opened));
+  	store.dispatch(updateDrawerState(e.target as AppDrawerElement.opened));
   }
 
   stateChanged(state: RootState) {
-    this._page = state.app!.page;
-    this._offline = state.app!.offline;
-    this._snackbarOpened = state.app!.snackbarOpened;
-    this._drawerOpened = state.app!.drawerOpened;
+  	this._page = state.app!.page;
+  	this._offline = state.app!.offline;
+  	this._snackbarOpened = state.app!.snackbarOpened;
+  	this._drawerOpened = state.app!.drawerOpened;
   }
 }

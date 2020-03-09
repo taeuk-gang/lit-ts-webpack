@@ -1,7 +1,7 @@
 
 import { html, property, customElement } from 'lit-element';
-import { PageViewElement } from './page-view-element';
 import { connect } from 'pwa-helpers/connect-mixin.js';
+import { PageViewElement } from './page-view-element';
 
 // This element is connected to the Redux store.
 import { store, RootState } from '../store';
@@ -11,9 +11,6 @@ import { increment, decrement } from '../actions/counter';
 
 // We are lazy loading its reducer.
 import counter from '../reducers/counter';
-store.addReducers({
-  counter
-});
 
 // These are the elements needed by this element.
 import './counter-element';
@@ -21,22 +18,26 @@ import './counter-element';
 // These are the shared styles needed by this element.
 import { SharedStyles } from './shared-styles';
 
+store.addReducers({
+	counter,
+});
+
 @customElement('my-view2')
 export class MyView2 extends connect(store)(PageViewElement) {
-  @property({type: Number})
+  @property({ type: Number })
   private _clicks = 0;
 
-  @property({type: Number})
+  @property({ type: Number })
   private _value = 0;
 
   static get styles() {
-    return [
-      SharedStyles
-    ];
+  	return [
+  		SharedStyles,
+  	];
   }
 
   protected render() {
-    return html`
+  	return html`
       <section>
         <h2>Redux example: simple counter</h2>
         <div class="circle">${this._value}</div>
@@ -61,17 +62,18 @@ export class MyView2 extends connect(store)(PageViewElement) {
     `;
   }
 
+  // 이런 식으로 액션 dispatch를 사용
   private _counterIncremented() {
-    store.dispatch(increment());
+  	store.dispatch(increment());
   }
 
   private _counterDecremented() {
-    store.dispatch(decrement());
+  	store.dispatch(decrement());
   }
 
   // This is called every time something is updated in the store.
   stateChanged(state: RootState) {
-    this._clicks = state.counter!.clicks;
-    this._value = state.counter!.value;
+  	this._clicks = state.counter!.clicks;
+  	this._value = state.counter!.value;
   }
 }

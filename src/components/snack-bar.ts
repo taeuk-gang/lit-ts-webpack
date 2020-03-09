@@ -1,12 +1,14 @@
-import { LitElement, html, css, property, customElement } from 'lit-element';
+import {
+	LitElement, html, css, property, customElement,
+} from 'lit-element';
 
 @customElement('snack-bar')
 export class SnackBar extends LitElement {
-  @property({type: Boolean})
+  @property({ type: Boolean })
   active = false;
 
   static get styles() {
-    return css`
+  	return css`
       :host {
         display: block;
         position: fixed;
@@ -40,7 +42,7 @@ export class SnackBar extends LitElement {
   }
 
   protected render() {
-    return html`
+  	return html`
       <slot></slot>
     `;
   }
