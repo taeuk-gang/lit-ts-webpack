@@ -7,14 +7,9 @@
   "license": "BSD-3-Clause",
   "repository": "Polymer/pwa-starter-kit",
   "scripts": {
-    "start": "gulp serve",
-    "start:webpack": "webpack-dev-server --open --mode development",
-    "build": "tsc && polymer build --auto-base-path && gulp prpl-server",
-    "build:static": "tsc && polymer build",
-    "build:webpack": "rm -rf dist && webpack --config webpack.config.js",
-    "serve": "prpl-server --root server/build",
-    "serve:static": "polymer serve --port 5000 build/es5-bundled",
-    "serve:webpack": "polymer serve --port 3000 dist",
+    "start": "webpack-dev-server --open --mode development",
+    "build": "rm -rf dist && webpack --config webpack.config.js -p --optimize-minimize",
+    "serve": "polymer serve --port 3000 dist",
     "test": "npm run test:unit && npm run test:integration",
     "test:integration": "tsc && mocha test/integration --timeout=10000",
     "test:unit": "tsc && polymer test --module-resolution=node --npm",
@@ -22,8 +17,6 @@
     "test:regenerate_screenshots": "tsc && mocha test/integration/screenshots-baseline/regenerate.js --timeout=15000"
   },
   "dependencies": {
-    "@polymer/app-layout": "^3.1.0",
-    "@polymer/polymer": "^3.3.1",
     "@webcomponents/webcomponentsjs": "^2.4.2",
     "lit-element": "^2.2.1",
     "pwa-helpers": "^0.9.1",
@@ -41,9 +34,6 @@
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^5.1.1",
     "del": "^5.1.0",
-    "gulp": "^4.0.2",
-    "gulp-rename": "^2.0.0",
-    "gulp-replace": "^1.0.0",
     "html-webpack-plugin": "^3.2.0",
     "mocha": "^7.1.0",
     "pixelmatch": "^5.1.0",
@@ -57,5 +47,12 @@
     "webpack-cli": "^3.3.11",
     "webpack-dev-server": "^3.10.3",
     "workbox-webpack-plugin": "^5.0.0"
-  }
+  },
+  "optionalDependencies": {
+    "fsevents": "^1.2.7"
+  },
+  "browserslist": [
+    "last 2 versions",
+    ">= 5% in KR"
+  ]
 }
