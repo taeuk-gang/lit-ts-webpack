@@ -49,12 +49,12 @@ module.exports = {
       skipWaiting: true,
       runtimeCaching: [
         {
-          urlPattern: /\/@webcomponents\/webcomponentsjs\//,
-          handler: 'staleWhileRevalidate'
+          handler: 'StaleWhileRevalidate',
+          urlPattern: /\/@webcomponents\/webcomponentsjs\//
         },
         {
-          urlPattern: /^https:\/\/fonts.gstatic.com\//,
-          handler: 'staleWhileRevalidate'
+          handler: 'StaleWhileRevalidate',
+          urlPattern: /^https:\/\/fonts.gstatic.com\//
         }
       ]
     })
